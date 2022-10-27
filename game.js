@@ -1,4 +1,4 @@
-import { size, playersize, coinsize, ratio, random, checkMovement } from "./functions.js";
+import { size, playersize, bagsize, ratio, random, checkMovement } from "./functions.js";
 const speed = 300;
 
 const weapons = {
@@ -13,13 +13,24 @@ class gamescene extends Phaser.Scene {
   preload() {
     this.load.image("player", "assets/nave.png");
     this.load.image("inimigo", "assets/inimigo.png");
-    this.load.image("coin", "assets/bullet.png");
+    this.load.image("bag", "assets/bullet.png");
     this.load.image("universo", "assets/mapa.png");
     this.load.image("bullet", "assets/bullet.png");
     this.load.image("pistol", "assets/mira.png");
+    this.load.spritesheet("explode", "assests/explode.png"); // Nova adição
   }
 
   create() {
+
+    /*
+    var config1 = {
+        key: "boom",
+        frames: "explode",
+        hideOnComplete: true
+    };
+    this.anims.create(config1);
+    */
+
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
@@ -31,9 +42,9 @@ class gamescene extends Phaser.Scene {
       }
     }
 
-    this.coins = this.physics.add.group();
+    this.bags = this.physics.add.group();
     for(let i = 0; i < random(30, 50); i++){
-      this.coins.create(random(coinsize / 2, size - coinsize / 2), random(coinsize / 2, size - coinsize / 2), "coin").setScale(0.75, 0.75);
+      this.bags.create(random(bagsize / 2, size - bagsize / 2), random(bagsize / 2, size - bagsize / 2), "bag").setScale(0.75, 0.75);
     }
 
     this.player = this.physics.add.sprite(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "player").setScale(0.75, 0.75).setDepth(1);
@@ -64,13 +75,13 @@ class gamescene extends Phaser.Scene {
     this.healthbarinside.scrollFactorX = 0;
     this.healthbarinside.scrollFactorY = 0;
 
-    this.score = 0;
+    this.score = 0; //Pontuação inicial
 
     this.scoretext = this.add.text(window.innerWidth - 200, 100, "Pontuação: " + this.score, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.scoretext.scrollFactorX = 0;
     this.scoretext.scrollFactorY = 0;
 
-    this.ammo = 10; //Quantidade de munição
+    this.ammo = 20; //Quantidade de munição
     this.ammotext = this.add.text(window.innerWidth - 200, 150, "Balas: " + this.ammo, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.ammotext.scrollFactorX = 0;
     this.ammotext.scrollFactorY = 0;
@@ -89,8 +100,8 @@ class gamescene extends Phaser.Scene {
       }
     }, 1000);
 
-    this.physics.add.collider(this.player, this.coins, (player, coin) => {
-      this.collect(player, coin);
+    this.physics.add.collider(this.player, this.bags, (player, bag) => {
+      this.collect(player, bag);
     });
 
     this.physics.add.collider(this.player, this.demons, (player, demon) => {
@@ -102,18 +113,22 @@ class gamescene extends Phaser.Scene {
     this.physics.add.collider(this.bullets, this.demons, (bullet, demon) => {
       bullet.destroy();
       demon.destroy();
+      /*
+      this.clearTint();
+      this.play("boom"); // Explosão
+      */
       this.score += 1;
       this.scoretext.setText("Pontuação: " + this.score);
-      this.demontext.setText("Inimigo: " + this.demons.children.entries.length);
+      this.demontext.setText("Inimigos: " + this.demons.children.entries.length);
     });
   }
 
-  collect(player, coin){
-    this.ammo += 2;
+  collect(player, bag){
+    this.ammo += 2; //Aumentativo de balas
     this.ammotext.setText("Balas: " + this.ammo);
-    coin.destroy();
+    bag.destroy();
     for(let i = 0; i < random(0, 2); i++){
-      this.coins.create(random(coinsize / 2, size - coinsize / 2), random(coinsize / 2, size - coinsize / 2), "coin").setScale(0.75, 0.75);
+      this.bags.create(random(bagsize / 2, size - bagsize / 2), random(bagsize / 2, size - bagsize / 2), "bag").setScale(0.75, 0.75);
     }
   }
 
@@ -125,7 +140,7 @@ class gamescene extends Phaser.Scene {
   loseHealth(player, demon){
     demon.touchingplayer = true;
     if(demon.timeleft != 0) return;
-    this.health -= 10;
+    this.health -= 20;
     this.updateHealthBar();
     if(this.health <= 0){
       this.scene.start("diedscene");
@@ -134,17 +149,16 @@ class gamescene extends Phaser.Scene {
     demon.timeleft = 50;
   }
 
-
   addDemons(){
     this.demons = this.physics.add.group();
     this.addDemonFunction = setInterval(() => {
       let demon = this.demons.create(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "inimigo").setScale(0.75, 0.75).setDepth(1);
       demon.timeleft = 0;
-      demon.speed = random(100, speed);
+      demon.speed = random(200, speed); //Antigamente com velocidade de 100
       demon.touchingplayer = false;
       demon.setBounce(1, 1);
       this.demontext.setText("Inimigos: " + this.demons.children.entries.length)
-    }, 3000);
+    }, 1000); //Tempo de spawn
   }
 
   addWeaponActions(){

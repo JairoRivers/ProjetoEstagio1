@@ -2,7 +2,7 @@ var width = window.innerWidth;
 var height = window.innerHeight;
 const size = 3000;
 const playersize = 75;
-const coinsize = 37.5;
+const bagsize = 37.5;
 const ratio = size / 500;
 
 function random(number1, number2){
@@ -24,4 +24,4 @@ function checkMovement(direction, x, y){
   return true;
 }
 
-export { width, height, size, playersize, coinsize, ratio, random, checkMovement }
+export { width, height, size, playersize, bagsize, ratio, random, checkMovement }
