@@ -17,7 +17,7 @@ class gamescene extends Phaser.Scene {
     this.load.image("universo", "assets/mapa.png");
     this.load.image("bullet", "assets/bullet.png");
     this.load.image("pistol", "assets/mira.png");
-    this.load.spritesheet("explode", "assests/explode.png"); // Nova adição
+    this.load.spritesheet("explode", "assests/explode.png"); // Ideia
   }
 
   create() {
