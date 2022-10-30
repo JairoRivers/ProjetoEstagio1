@@ -1,4 +1,4 @@
-import { size, playersize, bagsize, ratio, random, checkMovement } from "./functions.js";
+import { size, playersize, ammosize, ratio, random, checkMovement } from "./functions.js";
 const speed = 300;
 
 const weapons = {
@@ -11,49 +11,49 @@ class gamescene extends Phaser.Scene {
   }
   
   preload() {
+    // Imagens
     this.load.image("player", "assets/nave.png");
     this.load.image("inimigo", "assets/inimigo.png");
-    this.load.image("bag", "assets/bullet.png");
+    this.load.image("ammo", "assets/bullet.png");
     this.load.image("universo", "assets/mapa.png");
     this.load.image("bullet", "assets/bullet.png");
     this.load.image("pistol", "assets/mira.png");
-    this.load.spritesheet("explode", "assests/explode.png"); // Ideia
+
+    // Sons
+    this.load.audio("explosion", ["sounds/explosion.wav"]);
+
   }
 
   create() {
-
-    /*
-    var config1 = {
-        key: "boom",
-        frames: "explode",
-        hideOnComplete: true
-    };
-    this.anims.create(config1);
-    */
+    var explosion = this.sound.add("explosion", { loop: false });
 
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
     this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 
+
+    // Criação do mapa
     for(let i = size / (ratio * 2); i < size; i += size / ratio){
       for(let j = size / (ratio * 2); j < size; j += size / ratio){
         let universo = this.physics.add.image(i, j, "universo").setDepth(0);
       }
     }
-
-    this.bags = this.physics.add.group();
+      
+    // Spawn de munição
+    this.ammos = this.physics.add.group();
     for(let i = 0; i < random(30, 50); i++){
-      this.bags.create(random(bagsize / 2, size - bagsize / 2), random(bagsize / 2, size - bagsize / 2), "bag").setScale(0.75, 0.75);
+      this.ammos.create(random(ammosize / 2, size - ammosize / 2), random(ammosize / 2, size - ammosize / 2), "ammo").setScale(0.75, 0.75);
     }
-
+      
+    // Nascimento do player
     this.player = this.physics.add.sprite(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "player").setScale(0.75, 0.75).setDepth(1);
     this.cameras.main.startFollow(this.player);
     this.physics.world.setBounds(0, 0, size, size);
     this.player.setCollideWorldBounds(true);
 
 
-    this.pistol = this.physics.add.sprite(this.player.x, this.player.y, "pistol").setDepth(2).setScale(0, 0); //Mudança que deixa a arma inv
+    this.pistol = this.physics.add.sprite(this.player.x, this.player.y, "pistol").setDepth(2).setScale(0, 0); //Mudança que deixa a arma invisível
 
     this.pistol.angle2 = 0;
 
@@ -62,7 +62,7 @@ class gamescene extends Phaser.Scene {
     this.physics.world.setFPS(120);
 
 
-    this.health = 100; //Fazer possível mudança na vida
+    this.health = 100; //Vida atual do player
     this.healthtext = this.add.text(100, 50, "Vida", { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.healthtext.scrollFactorX = 0;
     this.healthtext.scrollFactorY = 0;
@@ -77,12 +77,13 @@ class gamescene extends Phaser.Scene {
 
     this.score = 0; //Pontuação inicial
 
+    //Interface lateral
     this.scoretext = this.add.text(window.innerWidth - 200, 100, "Pontuação: " + this.score, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.scoretext.scrollFactorX = 0;
     this.scoretext.scrollFactorY = 0;
 
     this.ammo = 20; //Quantidade de munição
-    this.ammotext = this.add.text(window.innerWidth - 200, 150, "Balas: " + this.ammo, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
+    this.ammotext = this.add.text(window.innerWidth - 200, 150, "Munição: " + this.ammo, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.ammotext.scrollFactorX = 0;
     this.ammotext.scrollFactorY = 0;
 
@@ -100,8 +101,8 @@ class gamescene extends Phaser.Scene {
       }
     }, 1000);
 
-    this.physics.add.collider(this.player, this.bags, (player, bag) => {
-      this.collect(player, bag);
+    this.physics.add.collider(this.player, this.ammos, (player, ammo) => {
+      this.collect(player, ammo);
     });
 
     this.physics.add.collider(this.player, this.demons, (player, demon) => {
@@ -113,22 +114,20 @@ class gamescene extends Phaser.Scene {
     this.physics.add.collider(this.bullets, this.demons, (bullet, demon) => {
       bullet.destroy();
       demon.destroy();
-      /*
-      this.clearTint();
-      this.play("boom"); // Explosão
-      */
+      explosion.play();
+      explosion.setVolume(0.1);
       this.score += 1;
       this.scoretext.setText("Pontuação: " + this.score);
       this.demontext.setText("Inimigos: " + this.demons.children.entries.length);
     });
   }
 
-  collect(player, bag){
+  collect(player, ammo){
     this.ammo += 2; //Aumentativo de balas
-    this.ammotext.setText("Balas: " + this.ammo);
-    bag.destroy();
+    this.ammotext.setText("Munição: " + this.ammo);
+    ammo.destroy();
     for(let i = 0; i < random(0, 2); i++){
-      this.bags.create(random(bagsize / 2, size - bagsize / 2), random(bagsize / 2, size - bagsize / 2), "bag").setScale(0.75, 0.75);
+      this.ammos.create(random(ammosize / 2, size - ammosize / 2), random(ammosize / 2, size - ammosize / 2), "ammo").setScale(0.75, 0.75);
     }
   }
 
@@ -158,7 +157,7 @@ class gamescene extends Phaser.Scene {
       demon.touchingplayer = false;
       demon.setBounce(1, 1);
       this.demontext.setText("Inimigos: " + this.demons.children.entries.length)
-    }, 1000); //Tempo de spawn
+    }, 1000); //Tempo de spawn (1 segundo)
   }
 
   addWeaponActions(){
@@ -175,7 +174,7 @@ class gamescene extends Phaser.Scene {
       this.pistol.angle2 = angle;
       this.useweapon = false;
       this.ammo--;
-      this.ammotext.setText("Balas: " + this.ammo);
+      this.ammotext.setText("Munição: " + this.ammo);
     });
     
     window.addEventListener("mousemove", e => {
