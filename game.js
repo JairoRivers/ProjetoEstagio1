@@ -47,7 +47,7 @@ class gamescene extends Phaser.Scene {
     }
       
     // Nascimento do player
-    this.player = this.physics.add.sprite(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "player").setScale(0.75, 0.75).setDepth(1);
+    this.player = this.physics.add.sprite(1500, 1500, "player").setScale(0.75, 0.75).setDepth(1);
     this.cameras.main.startFollow(this.player);
     this.physics.world.setBounds(0, 0, size, size);
     this.player.setCollideWorldBounds(true);
@@ -57,7 +57,7 @@ class gamescene extends Phaser.Scene {
 
     this.pistol.angle2 = 0;
 
-    this.addDemons();
+    this.addEnemys();
     this.bullets = this.physics.add.group();
     this.physics.world.setFPS(120);
 
@@ -78,25 +78,25 @@ class gamescene extends Phaser.Scene {
     this.score = 0; //Pontuação inicial
 
     //Interface lateral
-    this.scoretext = this.add.text(window.innerWidth - 200, 100, "Pontuação: " + this.score, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
+    this.scoretext = this.add.text(window.innerWidth - 215, 50, "Pontuação: " + this.score, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.scoretext.scrollFactorX = 0;
     this.scoretext.scrollFactorY = 0;
 
     this.ammo = 20; //Quantidade de munição
-    this.ammotext = this.add.text(window.innerWidth - 200, 150, "Munição: " + this.ammo, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
+    this.ammotext = this.add.text(window.innerWidth - 215, 100, "Munição: " + this.ammo, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.ammotext.scrollFactorX = 0;
     this.ammotext.scrollFactorY = 0;
 
-    this.demontext = this.add.text(window.innerWidth - 200, 200, "Inimigos: 0", { fontFamily:"Arial", fontSize: 30 }).setDepth(10);
-    this.demontext.scrollFactorX = 0;
-    this.demontext.scrollFactorY = 0;
+    this.enemytext = this.add.text(window.innerWidth - 215, 150, "Inimigos: 0", { fontFamily:"Arial", fontSize: 30 }).setDepth(10);
+    this.enemytext.scrollFactorX = 0;
+    this.enemytext.scrollFactorY = 0;
 
     this.addWeaponActions();
 
     var gameobject = this;
     this.healFunction = setInterval(function(){
       if(gameobject.health < 100){
-        gameobject.health += 1;
+        gameobject.health += 2 //Taxa de recuperação
         gameobject.updateHealthBar();
       }
     }, 1000);
@@ -105,20 +105,20 @@ class gamescene extends Phaser.Scene {
       this.collect(player, ammo);
     });
 
-    this.physics.add.collider(this.player, this.demons, (player, demon) => {
-      this.loseHealth(player, demon);
+    this.physics.add.collider(this.player, this.enemys, (player, enemy) => {
+      this.loseHealth(player, enemy);
     });
 
-    this.physics.add.collider(this.demons, this.demons);
+    this.physics.add.collider(this.enemys, this.enemys);
     
-    this.physics.add.collider(this.bullets, this.demons, (bullet, demon) => {
+    this.physics.add.collider(this.bullets, this.enemys, (bullet, enemy) => {
       bullet.destroy();
-      demon.destroy();
+      enemy.destroy();
       explosion.play();
       explosion.setVolume(0.1);
-      this.score += 1;
+      this.score += 10; // Aumentativo de pontos
       this.scoretext.setText("Pontuação: " + this.score);
-      this.demontext.setText("Inimigos: " + this.demons.children.entries.length);
+      this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length);
     });
   }
 
@@ -136,27 +136,28 @@ class gamescene extends Phaser.Scene {
     this.healthbarinside.width = 200 * this.health / 100;
   }
 
-  loseHealth(player, demon){
-    demon.touchingplayer = true;
-    if(demon.timeleft != 0) return;
+  loseHealth(player, enemy){
+    enemy.touchingplayer = true;
+    if(enemy.timeleft != 0) return;
     this.health -= 20;
     this.updateHealthBar();
     if(this.health <= 0){
+      localStorage.setItem("score", this.score); //Salva a pontuação
       this.scene.start("diedscene");
-      clearInterval(this.addDemonFunction);
+      clearInterval(this.addEnemyFunction);
     }
-    demon.timeleft = 50;
+    enemy.timeleft = 50;
   }
 
-  addDemons(){
-    this.demons = this.physics.add.group();
-    this.addDemonFunction = setInterval(() => {
-      let demon = this.demons.create(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "inimigo").setScale(0.75, 0.75).setDepth(1);
-      demon.timeleft = 0;
-      demon.speed = random(200, speed); //Antigamente com velocidade de 100
-      demon.touchingplayer = false;
-      demon.setBounce(1, 1);
-      this.demontext.setText("Inimigos: " + this.demons.children.entries.length)
+  addEnemys(){
+    this.enemys = this.physics.add.group();
+    this.addEnemyFunction = setInterval(() => {
+      let enemy = this.enemys.create(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "inimigo").setScale(0.75, 0.75).setDepth(1);
+      enemy.timeleft = 0;
+      enemy.speed = random(200, speed); //Antigamente com velocidade de 100
+      enemy.touchingplayer = false;
+      enemy.setBounce(1, 1);
+      this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length)
     }, 1000); //Tempo de spawn (1 segundo)
   }
 
@@ -208,23 +209,23 @@ class gamescene extends Phaser.Scene {
 
     this.player.angle = this.pistol.angle;
 
-    for(let demon of this.demons.children.entries){
-      if(demon.timeleft != 0){
-        demon.timeleft -= 1;
+    for(let enemy of this.enemys.children.entries){
+      if(enemy.timeleft != 0){
+        enemy.timeleft -= 1;
       }
-      if(demon.touchingplayer){
-        demon.touchingplayer = false;
+      if(enemy.touchingplayer){
+        enemy.touchingplayer = false;
         var prevent = true;
         if(checkMovement("left", this.player.body.position.x, this.player.body.position.y) && checkMovement("right", this.player.body.position.x, this.player.body.position.y) && checkMovement("up", this.player.body.position.x, this.player.body.position.y) && checkMovement("down", this.player.body.position.x, this.player.body.position.y)){
           prevent = false;
         }
         if(prevent) return;
       }
-      let angle = Math.atan2(this.player.body.position.y - demon.body.position.y, this.player.body.position.x - demon.body.position.x);
-      demon.setVelocityX(Math.cos(angle) * demon.speed);
-      demon.setVelocityY(Math.sin(angle) * demon.speed);
-      demon.angle = ((angle * 180 / Math.PI) + 360) % 360 + 90;
-      demon.touchingplayer = false;
+      let angle = Math.atan2(this.player.body.position.y - enemy.body.position.y, this.player.body.position.x - enemy.body.position.x);
+      enemy.setVelocityX(Math.cos(angle) * enemy.speed);
+      enemy.setVelocityY(Math.sin(angle) * enemy.speed);
+      enemy.angle = ((angle * 180 / Math.PI) + 360) % 360 + 90;
+      enemy.touchingplayer = false;
     }
   }
 }
