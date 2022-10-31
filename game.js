@@ -22,7 +22,7 @@ class gamescene extends Phaser.Scene {
     // Sons
     this.load.audio("explosion", ["sounds/explosion.wav"]);
 
-  }
+}
 
   create() {
     var explosion = this.sound.add("explosion", { loop: false });
@@ -76,6 +76,7 @@ class gamescene extends Phaser.Scene {
     this.healthbarinside.scrollFactorY = 0;
 
     this.score = 0; //Pontuação inicial
+    this.best = localStorage.getItem("best"); // Recorde
 
     //Interface lateral
     this.scoretext = this.add.text(window.innerWidth - 215, 50, "Pontuação: " + this.score, { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
@@ -113,10 +114,10 @@ class gamescene extends Phaser.Scene {
     
     this.physics.add.collider(this.bullets, this.enemys, (bullet, enemy) => {
       bullet.destroy();
-      enemy.destroy();
+      enemy.destroy()
       explosion.play();
       explosion.setVolume(0.1);
-      this.score += 10; // Aumentativo de pontos
+      this.score += 1; // Aumentativo de pontos
       this.scoretext.setText("Pontuação: " + this.score);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length);
     });
@@ -142,6 +143,10 @@ class gamescene extends Phaser.Scene {
     this.health -= 20;
     this.updateHealthBar();
     if(this.health <= 0){
+      if (this.score > this.best) {
+        localStorage.setItem ("best", this.score); // Salva o recorde
+        this.best = this.score;
+      }
       localStorage.setItem("score", this.score); //Salva a pontuação
       this.scene.start("diedscene");
       clearInterval(this.addEnemyFunction);

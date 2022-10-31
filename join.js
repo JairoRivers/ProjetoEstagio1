@@ -14,10 +14,10 @@ class joinscene extends Phaser.Scene {
   create(){
     this.add.image(600, 300, "menu");
 
-    //Adição da música de menu
+    //Adição da música do menu
     var login = this.sound.add("login screen", { loop: true });
     login.play();
-    login.setVolume(0.1);
+    login.setVolume(0.015);
       
     this.add.text(window.innerWidth / 2, 100, "Space Score", { fontFamily: "Times New Romam", fontSize:100 }).setOrigin(0.5);
 
