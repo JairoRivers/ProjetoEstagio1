@@ -21,11 +21,20 @@ class gamescene extends Phaser.Scene {
 
     // Sons
     this.load.audio("explosion", ["sounds/explosion.wav"]);
-
+    this.load.audio("shot", ["sounds/shot.wav"]);
+    this.load.audio("ammoSound", ["sounds/ammo.wav"]);
 }
 
   create() {
+
+    // Configurações de sons
     var explosion = this.sound.add("explosion", { loop: false });
+    var shot = this.sound.add("shot", { loop: false });
+    var ammoSound = this.sound.add("ammoSound", { loop: false });
+
+    //Volumes
+    explosion.setVolume(0.1);
+    ammoSound.setVolume(0.040);
 
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
@@ -104,6 +113,7 @@ class gamescene extends Phaser.Scene {
 
     this.physics.add.collider(this.player, this.ammos, (player, ammo) => {
       this.collect(player, ammo);
+      ammoSound.play();
     });
 
     this.physics.add.collider(this.player, this.enemys, (player, enemy) => {
@@ -116,7 +126,6 @@ class gamescene extends Phaser.Scene {
       bullet.destroy();
       enemy.destroy()
       explosion.play();
-      explosion.setVolume(0.1);
       this.score += 1; // Aumentativo de pontos
       this.scoretext.setText("Pontuação: " + this.score);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length);

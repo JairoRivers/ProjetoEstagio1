@@ -6,10 +6,15 @@ class howtoplay extends Phaser.Scene {
   }
 
   preload(){
-    
+    this.load.audio("click", ["sounds/click.wav"]);
+
   }
   
   create(){
+    // Config do som do clique
+    var click = this.sound.add("click", {lopp: false});
+    click.setVolume(0.040);
+    
     this.add.text(window.innerWidth / 2, 100, "Como jogar", { fontFamily: "Arial", fontSize:75 }).setOrigin(0.5);
       
     this.add.text(window.innerWidth / 2, 250, "WASD/Setas para mover, botão direiro do mouse para atirar\n\nObjetivo: Somar o máximo de pontos possíveis !!!", { fontFamily: "Arial", fontSize:30 }).setOrigin(0.5);
@@ -21,6 +26,7 @@ class howtoplay extends Phaser.Scene {
     this.button.x = this.text.x - (this.text.width / 2) - 5;
     this.button.y = this.text.y - (this.text.height / 2) - 5;
     this.button.setInteractive().on("pointerdown", () => {
+      click.play();
       this.scene.start("joinscene");
     });
   }

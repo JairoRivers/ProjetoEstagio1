@@ -7,7 +7,9 @@ class joinscene extends Phaser.Scene {
   
   preload(){
      this.load.image("menu", "assets/menu.png");
-     this.load.audio("login screen", ["sounds/Menu Arcade.mp3"]);
+     this.load.audio("login screen", ["sounds/menu_Arcade.mp3"]);
+     this.load.audio("click", ["sounds/click.wav"]);
+
 
   }
   
@@ -18,6 +20,10 @@ class joinscene extends Phaser.Scene {
     var login = this.sound.add("login screen", { loop: true });
     login.play();
     login.setVolume(0.015);
+
+    //Som do clique
+    var click = this.sound.add("click", {lopp: false});
+    click.setVolume(0.040);
       
     this.add.text(window.innerWidth / 2, 100, "Space Score", { fontFamily: "Times New Romam", fontSize:100 }).setOrigin(0.5);
 
@@ -28,6 +34,7 @@ class joinscene extends Phaser.Scene {
     this.button.x = this.text.x - (this.text.width / 2) - 5;
     this.button.y = this.text.y - (this.text.height / 2) - 5;
     this.button.setInteractive().on('pointerdown', () => {
+      click.play();
       login.stop();
       this.scene.start("gamescene");
     });
@@ -39,6 +46,7 @@ class joinscene extends Phaser.Scene {
     this.button2.x = this.text2.x - (this.text2.width / 2) - 5;
     this.button2.y = this.text2.y - (this.text2.height / 2) - 5;
     this.button2.setInteractive().on('pointerdown', () => {
+      click.play();
       login.stop();
       this.scene.start("howtoplay");
     });
