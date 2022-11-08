@@ -12,30 +12,31 @@ class gamescene extends Phaser.Scene {
   
   preload() {
     // Imagens
-    this.load.image("player", "assets/nave.png");
+    this.load.image("jogador", "assets/nave.png");
     this.load.image("inimigo", "assets/inimigo.png");
-    this.load.image("ammo", "assets/bullet.png");
+    this.load.image("munição", "assets/projétil.png");
     this.load.image("universo", "assets/mapa.png");
-    this.load.image("bullet", "assets/bullet.png");
-    this.load.image("pistol", "assets/mira.png");
+    this.load.image("projétil", "assets/projétil.png");
+    this.load.image("mira", "assets/mira.png");
 
     // Sons
     this.load.audio("explosion", ["sounds/explosion.wav"]);
     this.load.audio("shot", ["sounds/shot.wav"]);
-    this.load.audio("ammoSound", ["sounds/ammo.wav"]);
+    this.load.audio("collectSound", ["sounds/ammo.wav"]);
 }
 
   create() {
 
     // Configurações de sons
     var explosion = this.sound.add("explosion", { loop: false });
-    var shot = this.sound.add("shot", { loop: false });
-    var ammoSound = this.sound.add("ammoSound", { loop: false });
+    //var shot = this.sound.add("shot", { loop: false });
+    var collectSound = this.sound.add("collectSound", { loop: false });
 
     //Volumes
-    explosion.setVolume(0.1);
-    ammoSound.setVolume(0.040);
+    explosion.setVolume(0.080);
+    collectSound.setVolume(0.070);
 
+    //Teclado
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
     this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
     this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
@@ -52,17 +53,17 @@ class gamescene extends Phaser.Scene {
     // Spawn de munição
     this.ammos = this.physics.add.group();
     for(let i = 0; i < random(30, 50); i++){
-      this.ammos.create(random(ammosize / 2, size - ammosize / 2), random(ammosize / 2, size - ammosize / 2), "ammo").setScale(0.75, 0.75);
+      this.ammos.create(random(ammosize / 2, size - ammosize / 2), random(ammosize / 2, size - ammosize / 2), "munição").setScale(0.75, 0.75);
     }
       
     // Nascimento do player
-    this.player = this.physics.add.sprite(1500, 1500, "player").setScale(0.75, 0.75).setDepth(1);
+    this.player = this.physics.add.sprite(1500, 1500, "jogador").setScale(0.75, 0.75).setDepth(1);
     this.cameras.main.startFollow(this.player);
     this.physics.world.setBounds(0, 0, size, size);
     this.player.setCollideWorldBounds(true);
 
 
-    this.pistol = this.physics.add.sprite(this.player.x, this.player.y, "pistol").setDepth(2).setScale(0, 0); //Mudança que deixa a arma invisível
+    this.pistol = this.physics.add.sprite(this.player.x, this.player.y, "mira").setDepth(2).setScale(0, 0); //Mudança que deixa a arma invisível
 
     this.pistol.angle2 = 0;
 
@@ -113,7 +114,7 @@ class gamescene extends Phaser.Scene {
 
     this.physics.add.collider(this.player, this.ammos, (player, ammo) => {
       this.collect(player, ammo);
-      ammoSound.play();
+      collectSound.play();
     });
 
     this.physics.add.collider(this.player, this.enemys, (player, enemy) => {
@@ -133,11 +134,11 @@ class gamescene extends Phaser.Scene {
   }
 
   collect(player, ammo){
-    this.ammo += 2; //Aumentativo de balas
+    this.ammo += 2; //Aumentativo da munição
     this.ammotext.setText("Munição: " + this.ammo);
     ammo.destroy();
     for(let i = 0; i < random(0, 2); i++){
-      this.ammos.create(random(ammosize / 2, size - ammosize / 2), random(ammosize / 2, size - ammosize / 2), "ammo").setScale(0.75, 0.75);
+      this.ammos.create(random(ammosize / 2, size - ammosize / 2), random(ammosize / 2, size - ammosize / 2), "munição").setScale(0.75, 0.75);
     }
   }
 
@@ -181,7 +182,7 @@ class gamescene extends Phaser.Scene {
       if(!this.useweapon) return;
       if(!this.ammo) return;
       var angle = Math.atan2(e.clientY - (window.innerHeight / 2), e.clientX - (window.innerWidth / 2));
-      let bullet = this.bullets.create(this.player.body.position.x + playersize / 2 + Math.cos(angle) * playersize / 4, this.player.body.position.y + playersize / 2 + Math.sin(angle) * playersize / 4, "bullet").setScale(1, 0.2);
+      let bullet = this.bullets.create(this.player.body.position.x + playersize / 2 + Math.cos(angle) * playersize / 4, this.player.body.position.y + playersize / 2 + Math.sin(angle) * playersize / 4, "projétil").setScale(1, 0.2);
       bullet.angle = ((angle * 180 / Math.PI) + 360) % 360;
       bullet.setVelocityX(Math.cos(angle) * 1500);
       bullet.setVelocityY(Math.sin(angle) * 1500);
