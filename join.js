@@ -14,7 +14,7 @@ class joinscene extends Phaser.Scene {
   create(){
     this.add.image(600, 300, "menu");
 
-    //Adição da música do menu
+    //Música do menu
     var login = this.sound.add("login screen", { loop: true });
     login.play();
     login.setVolume(0); //Por enquanto manter no modo mudo
