@@ -9,8 +9,6 @@ class joinscene extends Phaser.Scene {
      this.load.image("menu", "assets/menu.png");
      this.load.audio("login screen", ["sounds/menu_Arcade.mp3"]);
      this.load.audio("click", ["sounds/click.wav"]);
-
-
   }
   
   create(){
@@ -19,7 +17,7 @@ class joinscene extends Phaser.Scene {
     //Adição da música do menu
     var login = this.sound.add("login screen", { loop: true });
     login.play();
-    login.setVolume(0); //Modo mudo
+    login.setVolume(0); //Por enquanto manter no modo mudo
 
     //Som do clique
     var click = this.sound.add("click", {lopp: false});
