@@ -18,9 +18,10 @@ class gamescene extends Phaser.Scene {
     this.load.image("universo", "assets/mapa.png");
     this.load.image("projétil", "assets/projétil.png");
     this.load.image("mira", "assets/mira.png");
+    this.load.spritesheet("explosão", "assets/explosão.png",{frameWidth:32, frameHeight:32});
 
     // Sons
-    this.load.audio("explosion", ["sounds/explosion.wav"]);
+    this.load.audio("boom", ["sounds/boom.wav"]);
     this.load.audio("shot", ["sounds/shot.wav"]);
     this.load.audio("collectSound", ["sounds/ammo.wav"]);
 }
@@ -28,12 +29,12 @@ class gamescene extends Phaser.Scene {
   create() {
 
     // Configurações de sons
-    var explosion = this.sound.add("explosion", { loop: false });
+    var boom = this.sound.add("boom", { loop: false });
     //var shot = this.sound.add("shot", { loop: false });
     var collectSound = this.sound.add("collectSound", { loop: false });
 
     //Volumes
-    explosion.setVolume(0.080);
+    boom.setVolume(0.080);
     collectSound.setVolume(0.070);
 
     //Teclado
@@ -49,6 +50,14 @@ class gamescene extends Phaser.Scene {
         let universo = this.physics.add.image(i, j, "universo").setDepth(0);
       }
     }
+
+    //Animação de explosão
+    this.anims.create({
+      key:"blast",
+      frames:this.anims.generateFrameNumbers("explosão"),
+      frameRate:10,
+      repeat:0
+    });
       
     // Spawn de munição
     this.ammos = this.physics.add.group();
@@ -125,13 +134,18 @@ class gamescene extends Phaser.Scene {
     
     this.physics.add.collider(this.bullets, this.enemys, (bullet, enemy) => {
       bullet.destroy();
-      enemy.destroy()
-      explosion.play();
+      enemy.destroy();
+      this.explosion(enemy);
+      boom.play();
       this.score += 1; // Aumentativo de pontos
       this.scoretext.setText("Pontuação: " + this.score);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length);
     });
   }
+
+  explosion (enemy){
+    var explosion = this.physics.add.sprite(enemy.x , enemy.y ).setScale(2).anims.play("blast");
+}
 
   collect(player, ammo){
     this.ammo += 2; //Aumentativo da munição
