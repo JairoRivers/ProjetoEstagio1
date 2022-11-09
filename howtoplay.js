@@ -7,7 +7,6 @@ class howtoplay extends Phaser.Scene {
 
   preload(){
     this.load.audio("click", ["sounds/click.wav"]);
-
   }
   
   create(){

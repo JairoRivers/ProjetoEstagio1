@@ -1,10 +1,6 @@
 import { size, playersize, ammosize, ratio, random, checkMovement } from "./functions.js";
 const speed = 300;
 
-const weapons = {
-  pistol: 30
-}
-
 class gamescene extends Phaser.Scene {
   constructor(){
     super();
@@ -23,7 +19,7 @@ class gamescene extends Phaser.Scene {
     // Sons
     this.load.audio("boom", ["sounds/boom.wav"]);
     this.load.audio("shot", ["sounds/shot.wav"]);
-    this.load.audio("collectSound", ["sounds/ammo.wav"]);
+    this.load.audio("collectSound", ["sounds/collect.wav"]);
 }
 
   create() {
@@ -148,7 +144,7 @@ class gamescene extends Phaser.Scene {
 }
 
   collect(player, ammo){
-    this.ammo += 2; //Aumentativo da munição
+    this.ammo += 1; //Aumentativo da munição
     this.ammotext.setText("Munição: " + this.ammo);
     ammo.destroy();
     for(let i = 0; i < random(0, 2); i++){

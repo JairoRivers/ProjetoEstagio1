@@ -19,14 +19,7 @@ class diedscene extends Phaser.Scene {
     // Mostra os pontos
     this.add.text(window.innerWidth / 2, window.innerHeight / 2.8, "Pontuação: " + localStorage.getItem("score"), { fontFamily: "Arial", fontSize:75 }).setOrigin(0.5);
 
-    //Evita mostrar os pontos anteriores
-    /*
-    if (localStorage.getItem("score") >= 1){
-        localStorage.setItem("score", 0);
-    }
-    */
-
-    //Mostra o recorde
+    // Mostra o recorde
     this.add.text(window.innerWidth / 2, window.innerHeight / 2.0, "Recorde: " + localStorage.getItem("best"), { fontFamily: "Arial", fontSize:75 }).setOrigin(0.5);
 
     // Depois criar um reset de recorde -> localStorage.setItem("best", 0);
