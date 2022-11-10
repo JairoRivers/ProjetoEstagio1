@@ -46,7 +46,7 @@ class joinscene extends Phaser.Scene {
     this.button2.setInteractive().on('pointerdown', () => {
       click.play();
       login.stop();
-      this.scene.start("howtoplay");
+      this.scene.start("tutorial");
     });
 
   }

@@ -1,6 +1,6 @@
 import gamescene from "./game.js";
-import joinscene from "./join.js";
-import howtoplay from "./howtoplay.js";
+import menuscene from "./menu.js";
+import tutorial from "./tutorial.js";
 import diedscene from "./died.js";
 
 import { width, height } from "./functions.js";
@@ -23,10 +23,10 @@ const config = {
 const game = new Phaser.Game(config);
 
 game.scene.add("gamescene", gamescene);
-game.scene.add("joinscene", joinscene);
-game.scene.add("howtoplay", howtoplay)
+game.scene.add("menuscene", menuscene);
+game.scene.add("tutorial", tutorial)
 game.scene.add("diedscene", diedscene);
-game.scene.start("joinscene");
+game.scene.start("menuscene");
 
 window.addEventListener("resize", () => {
   game.scale.resize(window.innerWidth, window.innerHeight);

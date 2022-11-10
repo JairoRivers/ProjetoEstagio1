@@ -32,7 +32,7 @@ class diedscene extends Phaser.Scene {
     this.button.y = this.text.y - (this.text.height / 2) - 5;
     this.button.setInteractive().on('pointerdown', () => {
       click.play();
-      this.scene.start("joinscene");
+      this.scene.start("menuscene");
     });
 
   }

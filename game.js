@@ -4,7 +4,7 @@ const speed = 300;
 class gamescene extends Phaser.Scene {
   constructor(){
     super();
-  }
+}
   
   preload() {
     // Imagens
@@ -179,7 +179,7 @@ class gamescene extends Phaser.Scene {
     this.addEnemyFunction = setInterval(() => {
       let enemy = this.enemys.create(random(playersize / 2, size - playersize / 2), random(playersize / 2, size - playersize / 2), "inimigo").setScale(0.75, 0.75).setDepth(1);
       enemy.timeleft = 0;
-      enemy.speed = random(200, speed); //Antigamente com velocidade de 100
+      enemy.speed = random(220, speed); //Antigamente com velocidade de 100
       enemy.touchingplayer = false;
       enemy.setBounce(1, 1);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length)
