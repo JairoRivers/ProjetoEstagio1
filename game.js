@@ -18,20 +18,24 @@ class gamescene extends Phaser.Scene {
 
     // Sons
     this.load.audio("boom", ["sounds/boom.wav"]);
-    this.load.audio("shot", ["sounds/shot.wav"]);
     this.load.audio("collectSound", ["sounds/collect.wav"]);
+    this.load.audio("ost1", ["sounds/jogo.mp3"]);
 }
 
   create() {
-
+      
     // Configurações de sons
     var boom = this.sound.add("boom", { loop: false });
-    //var shot = this.sound.add("shot", { loop: false });
     var collectSound = this.sound.add("collectSound", { loop: false });
+    var ost1 = this.sound.add("ost1", { loop: true });
 
     //Volumes
     boom.setVolume(0.080);
     collectSound.setVolume(0.070);
+    ost1.setVolume(0.100);
+
+    //Play
+    ost1.play();
 
     //Teclado
     this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
@@ -124,6 +128,9 @@ class gamescene extends Phaser.Scene {
 
     this.physics.add.collider(this.player, this.enemys, (player, enemy) => {
       this.loseHealth(player, enemy);
+      if (this.health == 0){
+          ost1.stop();
+      }
     });
 
     this.physics.add.collider(this.enemys, this.enemys);
@@ -136,8 +143,12 @@ class gamescene extends Phaser.Scene {
       this.score += 1; // Aumentativo de pontos
       this.scoretext.setText("Pontuação: " + this.score);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length);
+      if (this.score == 250){
+          this.victory();
+          ost1.stop();
+      }
     });
-  }
+}
 
   explosion (enemy){
     var explosion = this.physics.add.sprite(enemy.x , enemy.y ).setScale(2).anims.play("blast");
@@ -183,7 +194,7 @@ class gamescene extends Phaser.Scene {
       enemy.touchingplayer = false;
       enemy.setBounce(1, 1);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length)
-    }, 1000); //Tempo de spawn (1 segundo)
+    }, 1200); //Tempo de spawn (1.2 segundo)
   }
 
   addWeaponActions(){
@@ -214,6 +225,10 @@ class gamescene extends Phaser.Scene {
         this.useweapon = true;
       }
     }, 500);
+  }
+
+  victory(){
+      this.scene.start("victoryscreen");
   }
 
   update() {

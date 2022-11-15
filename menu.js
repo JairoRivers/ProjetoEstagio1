@@ -1,6 +1,6 @@
 import { width, height } from "./functions.js";
 
-class joinscene extends Phaser.Scene {
+class menu extends Phaser.Scene {
   constructor(){
     super();
   }
@@ -56,4 +56,4 @@ class joinscene extends Phaser.Scene {
   }
 }
 
-export default joinscene;
+export default menu;

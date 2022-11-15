@@ -1,6 +1,6 @@
 import { width, height } from "./functions.js";
 
-class howtoplay extends Phaser.Scene {
+class tutorial extends Phaser.Scene {
   constructor(){
     super();
   }
@@ -16,7 +16,7 @@ class howtoplay extends Phaser.Scene {
     
     this.add.text(window.innerWidth / 2, 100, "Como jogar", { fontFamily: "Arial", fontSize:75 }).setOrigin(0.5);
       
-    this.add.text(window.innerWidth / 2, 250, "WASD/Setas para mover, botão direiro do mouse para atirar\n\nObjetivo: Somar o máximo de pontos possíveis !!!", { fontFamily: "Arial", fontSize:30 }).setOrigin(0.5);
+    this.add.text(window.innerWidth / 2, 250, "WASD/Setas para mover, botão direiro do mouse para atirar.\n\nObjetivo: Alcançar 250 pontos para que a invasão seja impedida.", { fontFamily: "Arial", fontSize:35 }).setOrigin(0.5);
       
     this.button = this.add.rectangle(0, 0, 0, 0, 0x0f0);
     this.text = this.add.text(window.innerWidth / 2, window.innerHeight / 1.5, 'Voltar', { fill: '#ffffff', fontFamily: "Arial", fontSize:50 }).setOrigin(0.5);
@@ -35,4 +35,4 @@ class howtoplay extends Phaser.Scene {
   }
 }
 
-export default howtoplay;
+export default tutorial;

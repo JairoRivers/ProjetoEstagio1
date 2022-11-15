@@ -2,6 +2,8 @@ import gamescene from "./game.js";
 import menuscene from "./menu.js";
 import tutorial from "./tutorial.js";
 import diedscene from "./died.js";
+import victoryscreen from "/win.js";
+
 
 import { width, height } from "./functions.js";
 
@@ -26,6 +28,7 @@ game.scene.add("gamescene", gamescene);
 game.scene.add("menuscene", menuscene);
 game.scene.add("tutorial", tutorial)
 game.scene.add("diedscene", diedscene);
+game.scene.add("victoryscreen", victoryscreen);
 game.scene.start("menuscene");
 
 window.addEventListener("resize", () => {
