@@ -19,7 +19,7 @@ class gamescene extends Phaser.Scene {
     // Sons
     this.load.audio("boom", ["sounds/boom.wav"]);
     this.load.audio("collectSound", ["sounds/collect.wav"]);
-    this.load.audio("ost1", ["sounds/jogo.mp3"]);
+    this.load.audio("ost1", ["sounds/zero.mp3"]);
 }
 
   create() {
