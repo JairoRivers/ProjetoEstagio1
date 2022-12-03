@@ -66,7 +66,7 @@ class gamescene extends Phaser.Scene {
     }
       
     // Nascimento do player
-    this.player = this.physics.add.sprite(1500, 1500, "jogador").setScale(0.75, 0.75).setDepth(1);
+    this.player = this.physics.add.sprite(1500, 1500, "jogador").setScale(0.80, 0.80).setDepth(1);
     this.cameras.main.startFollow(this.player);
     this.physics.world.setBounds(0, 0, size, size);
     this.player.setCollideWorldBounds(true);
@@ -82,15 +82,15 @@ class gamescene extends Phaser.Scene {
 
 
     this.health = 100; //Vida atual do player
-    this.healthtext = this.add.text(100, 50, "Vida", { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
+    this.healthtext = this.add.text(20, 40, "Vida", { fontFamily: "Arial", fontSize: 30 }).setDepth(10);
     this.healthtext.scrollFactorX = 0;
     this.healthtext.scrollFactorY = 0;
 
-    this.healthbar = this.add.rectangle(200, 100, 200, 20, 0x0ffffff).setDepth(10); 
+    this.healthbar = this.add.rectangle(120, 90, 200, 20, 0x0ffffff).setDepth(10); 
     this.healthbar.scrollFactorX = 0;
     this.healthbar.scrollFactorY = 0;
 
-    this.healthbarinside = this.add.rectangle(200, 100, 200, 20, 0x060f20c).setDepth(10);
+    this.healthbarinside = this.add.rectangle(120, 90, 200, 20, 0x060f20c).setDepth(10);
     this.healthbarinside.scrollFactorX = 0;
     this.healthbarinside.scrollFactorY = 0;
 
@@ -143,19 +143,20 @@ class gamescene extends Phaser.Scene {
       this.score += 1; // Aumentativo de pontos
       this.scoretext.setText("Pontuação: " + this.score);
       this.enemytext.setText("Inimigos: " + this.enemys.children.entries.length);
-      if (this.score == 250){
+      if (this.score == 200){
           this.victory();
+          localStorage.setItem ("best", this.score);
           ost1.stop();
       }
     });
 }
 
   explosion (enemy){
-    var explosion = this.physics.add.sprite(enemy.x , enemy.y ).setScale(2).anims.play("blast");
+    var explosion = this.physics.add.sprite(enemy.x , enemy.y ).setScale(2.2).anims.play("blast");
 }
 
   collect(player, ammo){
-    this.ammo += 1; //Aumentativo da munição
+    this.ammo += 2; //Aumentativo da munição
     this.ammotext.setText("Munição: " + this.ammo);
     ammo.destroy();
     for(let i = 0; i < random(0, 2); i++){

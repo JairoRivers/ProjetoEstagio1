@@ -1,6 +1,6 @@
 var width = window.innerWidth;
 var height = window.innerHeight;
-const size = 3000;
+const size = 3000; //Antes 3000
 const playersize = 75;
 const ammosize = 37.5;
 const ratio = size / 500;

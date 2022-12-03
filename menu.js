@@ -31,7 +31,10 @@ class menu extends Phaser.Scene {
     this.button.height = this.text.height + 15;
     this.button.x = this.text.x - (this.text.width / 2) - 5;
     this.button.y = this.text.y - (this.text.height / 2) - 5;
-    this.button.setInteractive().on('pointerdown', () => {
+    this.button.setInteractive();
+    this.button.on('pointerover', () => { this.text.setStyle({ fill: 'yellow'})});
+    this.button.on('pointerout', () => { this.text.setStyle({ fill: 'white'})});
+    this.button.on('pointerdown', () => {
       click.play();
       login.stop();
       this.scene.start("gamescene");
@@ -43,7 +46,10 @@ class menu extends Phaser.Scene {
     this.button2.height = this.text2.height + 15;
     this.button2.x = this.text2.x - (this.text2.width / 2) - 5;
     this.button2.y = this.text2.y - (this.text2.height / 2) - 5;
-    this.button2.setInteractive().on('pointerdown', () => {
+    this.button2.setInteractive();
+    this.button2.on('pointerover', () => { this.text2.setStyle({ fill: 'yellow'})});
+    this.button2.on('pointerout', () => { this.text2.setStyle({ fill: 'white'})});
+    this.button2.on('pointerdown', () => {
       click.play();
       login.stop();
       this.scene.start("tutorial");

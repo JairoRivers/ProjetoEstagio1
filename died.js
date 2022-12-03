@@ -30,6 +30,8 @@ class diedscene extends Phaser.Scene {
     this.button.height = this.text.height + 15;
     this.button.x = this.text.x - (this.text.width / 2) - 5;
     this.button.y = this.text.y - (this.text.height / 2) - 5;
+    this.button.on('pointerover', () => { this.text.setStyle({ fill: 'yellow'})});
+    this.button.on('pointerout', () => { this.text.setStyle({ fill: 'white'})});
     this.button.setInteractive().on('pointerdown', () => {
       click.play();
       this.scene.start("menuscene");

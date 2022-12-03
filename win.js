@@ -16,14 +16,16 @@ class win extends Phaser.Scene {
     
     this.add.text(window.innerWidth / 2, 100, "Parabéns por finalizar o jogo!!!", { fontFamily: "Arial", fontSize:60 }).setOrigin(0.5);
       
-    this.add.text(window.innerWidth / 2, 250, "Todas as naves inimiga foram derrotadas. Seu planeta está salvo.", { fontFamily: "Arial", fontSize:35 }).setOrigin(0.5);
+    this.add.text(window.innerWidth / 2, 250, "Todas as naves inimigas foram derrotadas.", { fontFamily: "Arial", fontSize:40 }).setOrigin(0.5);
       
     this.button = this.add.rectangle(0, 0, 0, 0, 0x0f0);
-    this.text = this.add.text(window.innerWidth / 2, window.innerHeight / 1.5, 'Voltar', { fill: '#ffffff', fontFamily: "Arial", fontSize:50 }).setOrigin(0.5);
+    this.text = this.add.text(window.innerWidth / 2, window.innerHeight / 1.8, 'Voltar', { fill: '#ffffff', fontFamily: "Arial", fontSize:40 }).setOrigin(0.5);
     this.button.width = this.text.width + 10;
     this.button.height = this.text.height + 10;
     this.button.x = this.text.x - (this.text.width / 2) - 5;
     this.button.y = this.text.y - (this.text.height / 2) - 5;
+    this.button.on('pointerover', () => { this.text.setStyle({ fill: 'yellow'})});
+    this.button.on('pointerout', () => { this.text.setStyle({ fill: 'white'})});
     this.button.setInteractive().on("pointerdown", () => {
       click.play();
       this.scene.start("menuscene");
